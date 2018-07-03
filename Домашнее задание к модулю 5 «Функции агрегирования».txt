@@ -1,0 +1,36 @@
+SELECT        dbo.press.name, dbo.books.Pages
+FROM            dbo.press CROSS JOIN
+                         dbo.books
+						 group by dbo.press.name, dbo.books.Pages
+
+
+
+SELECT        dbo.press.name, dbo.books.Pages, count (dbo.books.N)
+FROM            dbo.press CROSS JOIN
+                         dbo.books 
+where  dbo.press.name = 'Питер' and
+dbo.press.name ='Наука' and dbo.press.name = 'Кудиц-Образ'
+group by  dbo.press.name, dbo.books.Pages
+
+
+SELECT        dbo.books.*, dbo.themes.name AS Expr1
+FROM            dbo.books CROSS JOIN
+                         dbo.themes
+where dbo.themes.name like 'Программирование' and 
+Pages = (select max(Pages)
+from books  )
+
+
+SELECT        dbo.press.name, dbo.books.Name AS Expr1, dbo.books.Date
+FROM            dbo.press CROSS JOIN
+                         dbo.books
+where Date = (select min(Date)
+from books  )
+
+
+
+SELECT        dbo.press.name, dbo.books.Name AS Expr1, dbo.books.Pages
+FROM            dbo.press CROSS JOIN
+                         dbo.books
+where Pages = (select max(Pages)
+from books  )
