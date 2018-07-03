@@ -1,0 +1,95 @@
+insert into Format
+values (1, 'audio')
+insert into Format
+values (2, 'mp3')
+
+insert into Bands
+values (1, 'Сборники', 0)
+insert into Bands
+values (2, 'виа Гра', 2002)
+insert into Bands
+values (3, 'Ария', 1984)
+insert into Bands
+values (4, 'Меладзе', 1995)
+insert into Bands
+values (5, 'Тальков', 1984)
+insert into Bands
+values (6, 'Наутилус', 1983)
+
+insert into CD
+values (1, 'Союз28', 2004, 1, 1),
+(2, 'Стоп Снято', 2002, 2, 1),
+(3, 'Крещенье Огнем', 2003, 3, 1),
+(4, 'Все альбомы', 2005, 4, 2),
+(5, 'Все альбомы', 2005, 5, 2),
+(6, 'Лучшие песни', 2005, 3, 2),
+(8, 'Атлантида', 1997, 6, 2),
+(9, 'Атлантида', 1997, 6, 1),
+(10, 'Крылья', 1997, 6, 1);
+
+insert into Sellers
+values (1, 'Федор Максим'),
+(2, 'Орлов Александр');
+
+insert into Selling
+values (1,1,1),
+(2,1,2),
+(3,1,3),
+(4,1,4),
+(5,1,5),
+(6,2,6),
+(7,2,1),
+(8,2,8),
+(9,1,9),
+(10,2,10)
+
+
+
+
+1.select sg.id, ss.name as seller, cd.name as cd
+from selling sg,  sellers ss, CD cd
+where sg.id_seller = ss.id
+and sg.id_cd = cd.id
+
+2.select b.name, count(sg.id_cd) as sold_CDs
+from Selling sg, CD cd, Bands b
+where sg.id_cd = cd.id
+and cd.id_band = b.id
+group by b.name
+
+3.select b.name
+from Selling sg, CD cd, Bands b
+where sg.id_cd = cd.id
+and cd.id_band = b.id
+and cd.id_band = (select max(id_band) from cd)
+group by b.name
+
+
+1.create view F1
+select pr.name, b.Pressrun
+from press pr, books b, themes th
+where pr.id = b.Id_press
+and b.Id_theme = th.id
+and th.name = 'Программирование'
+and b.Pressrun = (select max(Pressrun) from books)
+
+2.create view F2
+as
+select top 1 th.name
+from themes th, books b
+where th.id = b.Id_theme
+and b.Pages = (select min(Pages) from books)
+
+3.create view F3
+as
+select b.Name
+from books b, press pr
+where b.Id_press = pr.id
+and pr.name like 'BHV%'
+and b.Price = (select max(Price) from books)
+
+4.create view F4
+as
+select *
+from books
+where (select count(Pages) from books) > (select avg(Pages) from books)
