@@ -1,0 +1,47 @@
+База данных DIPE
+
+Запросы 
+1)USE [DIPE]
+GO
+
+SELECT [id_worker]
+      ,[sum]
+      
+      
+  FROM [dbo].[Cash]
+  where cash_date = '2018-08-08'
+GO
+
+
+2)USE [DIPE]
+GO
+
+SELECT [id_client]
+      ,[FIO]
+      ,[address]
+      
+  FROM [dbo].[Clients]
+  where address = 'castelot'
+GO
+
+
+3)SELECT        dbo.Tour.name, dbo.Country.name_country
+FROM            dbo.Country_tour INNER JOIN
+                         dbo.Country ON dbo.Country_tour.id_country = dbo.Country.id_country INNER JOIN
+                         dbo.Tour ON dbo.Country_tour.id_tour = dbo.Tour.id_tour
+where name_country = 'USA'
+
+4)SELECT        name, id_tour, cost
+FROM            dbo.Tour
+where cost > 2000 and cost<5000
+
+5)
+select max(m)
+from (
+Select count(cs.id_service) as m, s.service_name
+from Services s, Contract_service cs, Contract c 
+where c.id_contract = cs.id_contract
+and s.id_service = cs.id_service 
+group by s.service_name
+)as a
+
