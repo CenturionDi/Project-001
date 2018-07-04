@@ -1,0 +1,89 @@
+create function F10()
+returns int 
+as 
+begin
+declare @result int
+select @result =(SELECT        count(books.N) 
+FROM            books INNER JOIN
+                         category ON books.id_category = category.id
+where category.name is null )
+
+return @result
+end 
+
+select [CORP\ְבהטלארִ].[F10]
+
+create function F13()
+returns table
+as
+return(
+SELECT        COUNT(books.N) AS count, themes.name, press.name as prsname
+FROM            books INNER JOIN
+                         themes ON books.Id_theme = themes.id INNER JOIN
+                         press ON books.Id_press = press.id
+GROUP BY themes.name, press.name
+)
+
+
+
+select* from F13()
+
+create function F20(@namebook nvarchar(255) ,@nametheme nvarchar(255),@namecategory nvarchar(255),@namepress nvarchar(255))
+returns table
+as 
+return (
+SELECT         books.Id_theme AS Expr1, books.id_category AS Expr2, books.*, books.N AS Expr3, books.Code AS Expr4, books.New AS Expr5, books.Name AS Expr6, books.Price AS Expr7, books.Format AS Expr8, books.[Date] AS Expr9, 
+                         books.Pressrun AS Expr10, books.Id_press AS Expr11, category.*, category.name AS Expr13, press.name AS Expr14, themes.name AS Expr12
+FROM            press INNER JOIN
+                         books ON press.id = books.Id_press INNER JOIN
+                         themes ON books.Id_theme = themes.id INNER JOIN
+                         category ON books.id_category = category.id)
+
+where dbo.books.name = @namebook and themes.name = @nametheme and press.name = @namepress 
+						 GROUP BY  books.Id_theme AS Expr1, books.id_category AS Expr2, books.*, books.N AS Expr3, books.Code AS Expr4, books.New AS Expr5, books.Name AS Expr6, books.Price AS Expr7, books.Format AS Expr8, books.[Date] AS Expr9, 
+                         books.Pressrun AS Expr10, books.Id_press AS Expr11, category.*, category.name AS Expr13, press.name AS Expr14, themes.name AS Expr12)
+
+
+
+create function F100(@a int ,@b int,@c int )
+returns int 
+as 
+begin
+declare @result int
+if 
+@a<@b and @a<@c 
+select @result = @a
+else 
+   if 
+   @b<@a and @b<@c 
+   select @result = @b
+   else 
+    select @result = @c
+return @result
+end 
+
+
+create function F113(@a int )
+returns int 
+as 
+begin
+declare @first int
+declare @second int
+declare @result int
+select @first = @a / 10
+select @second = @a %10
+if 
+@first>@second
+
+select @result = @first
+else 
+   if 
+   @first<@second
+  
+   select @result = @second
+   
+return @result
+end 
+
+
+select F113 (12)
