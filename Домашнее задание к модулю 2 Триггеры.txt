@@ -1,0 +1,160 @@
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE TRIGGER book_count_decrease
+   ON  [dbo].[Order]
+   AFTER  INSERT
+AS 
+BEGIN
+
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	Declare @id_bookf int
+Select @id_bookf= id_book  from inserted
+
+
+	update [dbo].[Library]
+	set [dbo].[Library].book_count=[dbo].[Library].book_count -1
+    -- Insert statements for trigger here
+
+END
+GO
+
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE TRIGGER book_count_increase
+   ON  [dbo].[Order]
+   AFTER DELETE
+AS 
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	Declare @id_bookf int
+Select @id_bookf= id_book  from deleted
+
+
+	update [dbo].[Library]
+	set [dbo].[Library].book_count=[dbo].[Library].book_count +1
+    -- Insert statements for trigger here
+
+END
+GO
+
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE TRIGGER book_limitation
+   ON  [dbo].[Order]
+   AFTER INSERT
+AS 
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	Declare @id_bookf int
+Select @id_bookf= id_book  from inserted
+
+if ( (select [dbo].[Library].book_count from [dbo].[Library]) =0)
+begin
+raiserror(' ниги кончились',0,1,@@rowcount)
+end
+
+
+    -- Insert statements for trigger here
+
+END
+GO
+
+
+CREATE TRIGGER book_giving_limitation
+   ON  [dbo].[Order]
+   Instead of INSERT
+AS 
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	Declare @id_stud int
+Select @id_stud= id_student  from inserted
+if((select count (@id_stud) from [dbo].[Order]) =3)
+	begin
+raiserror('студент уже имеет три книги',0,1,@@rowcount)
+end
+
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TRIGGER deleted_books
+   ON  Library
+   AFTER DELETE
+AS 
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+   Declare @id_book int, @book_name nvarchar (50), @book_count int
+select  @id_book = id_book, @book_name = book_name, @book_count = book_count from deleted 
+insert Deleted_Library values (@id_book, @book_name, @book_count)
+
+END
+GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TRIGGER book_add
+   ON  Library
+   AFTER insert
+AS 
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+   Declare @id_book int, @book_name nvarchar (50), @book_count int
+select  @id_book = id_book, @book_name = book_name, @book_count = book_count from inserted 
+insert Library values (@id_book, @book_name, @book_count)
+delete from [dbo].[Deleted_Library] where @id_book = id_bookd and @book_name = book_named and @book_count = book_count
+END
+GO
+
+
+
+
+
+
