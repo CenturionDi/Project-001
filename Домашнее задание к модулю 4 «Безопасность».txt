@@ -1,0 +1,9 @@
+База данных Aooks
+
+SELECT        dbo.books.Name, dbo.Students.Name_student, dbo.Orders.order_date
+FROM            dbo.books INNER JOIN
+                         dbo.Orders ON dbo.books.id_book = dbo.Orders.id_book INNER JOIN
+                         dbo.Students ON dbo.Orders.id_student = dbo.Students.id_student
+
+
+пользователи Teacher_D Librarian_D Administration_D password:123 все соответсвующие права определены 
